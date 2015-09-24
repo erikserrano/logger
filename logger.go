@@ -1,4 +1,4 @@
-// Paquete logger encargado de respaldar en archivos de texto mensajes 
+// Paquete logger encargado de respaldar en archivos de texto mensajes
 // y mostrar en consola
 package logger
 
