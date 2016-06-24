@@ -6,21 +6,13 @@ import (
 	"os"
 	"os/user"
 	"time"
+	"fmt"
 )
 
-// Estructura encargada de almacenar el archivo LOG
+// Estructura Logger encargada de almacenar la instancia para almacenamiento de mensajes
 type Logger struct {
 	FileName string
 	FilePath string
-}
-
-// Función encargada de crear una nueva estructura para el respaldo de los mensajes
-func New(filePath, fileName string) (*Logger, error) {
-	log := &Logger{fileName, filePath}
-	if _, err := openFile(filePath, fileName); err != nil {
-		return nil, err
-	}
-	return log, nil
 }
 
 // Función encargada de crear/abrir la ruta del archivo de respaldo
@@ -73,15 +65,11 @@ func (log *Logger) WriteLine(kind, message string) (int, error) {
 		return 0, err
 	}
 
-	userMessage := "[" + user.Uid + ":" + user.Username + "]"
-	timeMessage := "[" + time.Now().Format("02/01/2006 15:04:05.99999") + "]"
-	logMessage := "[" + kind + "] " + message
-
-	// Generamos mensaje
-	line := timeMessage + userMessage + logMessage
+	userMessage := user.Uid + ":" + user.Username
+	timeMessage := time.Now().Format("02/01/2006 15:04:05.99999")
 
 	// Guardamos mensaje
-	n, err := file.WriteString(line + "\n")
+	n, err := file.WriteString(fmt.Sprintf("[%s][%s][%s] %s\n", timeMessage, userMessage, kind, message))
 	if err != nil {
 		return 0, err
 	}
@@ -90,4 +78,13 @@ func (log *Logger) WriteLine(kind, message string) (int, error) {
 	println(timeMessage + logMessage)
 
 	return n, nil
+}
+
+// Función encargada de crear una nueva estructura para el respaldo de los mensajes
+func New(filePath, fileName string) (*Logger, error) {
+	log := &Logger{fileName, filePath}
+	if _, err := openFile(filePath, fileName); err != nil {
+		return nil, err
+	}
+	return log, nil
 }
