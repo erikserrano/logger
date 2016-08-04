@@ -75,7 +75,7 @@ func (log *Logger) WriteLine(kind, message string) (int, error) {
 	}
 
 	// Imprimitmos mensaje
-	println(timeMessage + logMessage)
+	fmt.Printf("[%s][%s][%s] %s\n", timeMessage, userMessage, kind, message)
 
 	return n, nil
 }
