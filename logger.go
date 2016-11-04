@@ -1,5 +1,4 @@
-// Paquete logger encargado de respaldar en archivos de texto mensajes
-// y mostrar en consola
+// Package logger encargado de respaldar en archivos de texto mensajes y mostrar en consola
 package logger
 
 import (
@@ -10,13 +9,13 @@ import (
 	"time"
 )
 
-// Estructura Logger encargada de almacenar la instancia para almacenamiento de mensajes
+// Logger estructura encargada de almacenar la instancia para almacenamiento de mensajes
 type Logger struct {
 	FileName string
 	FilePath string
 }
 
-// Función encargada de crear/abrir la ruta del archivo de respaldo
+// openFile open/create file for loggin
 func openFile(filePath, fileName string) (*os.File, error) {
 	// Creamos directorio
 	err := os.MkdirAll(filePath, 0777)
@@ -31,25 +30,24 @@ func openFile(filePath, fileName string) (*os.File, error) {
 		file, err = os.Create(filePath + fileName)
 		if err != nil {
 			return nil, err
-		} else {
-			initText := "#version: 0.1\n"
-			initText += "#creation: " + time.Now().String() + "\n"
-			initText += "#config: [datetime][userid:username][alert/error/info/etc] message\n"
+		}
+		initText := "#version: 0.1\n"
+		initText += "#creation: " + time.Now().String() + "\n"
+		initText += "#config: [datetime][userid:username][alert/error/info/etc] message\n"
 
-			// Cerramos archivo
-			defer file.Close()
+		// Cerramos archivo
+		defer file.Close()
 
-			// Escribimos encabezado
-			if _, err := file.WriteString(initText); err != nil {
-				return nil, err
-			}
+		// Escribimos encabezado
+		if _, err := file.WriteString(initText); err != nil {
+			return nil, err
 		}
 	}
 
 	return file, nil
 }
 
-// Método encargado de escribir un mensaje sobre el archivo LOG
+// WriteLine write message in log file
 func (log *Logger) WriteLine(message string, kind ...string) (int, error) {
 
 	// Abrimos archivo
@@ -86,7 +84,7 @@ func (log *Logger) WriteLine(message string, kind ...string) (int, error) {
 	return n, nil
 }
 
-// Función encargada de crear una nueva estructura para el respaldo de los mensajes
+// New create instance for loggin messages
 func New(filePath, fileName string) (*Logger, error) {
 	log := &Logger{fileName, filePath}
 	if _, err := openFile(filePath, fileName); err != nil {
