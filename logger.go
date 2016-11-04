@@ -17,6 +17,11 @@ type Logger struct {
 
 // openFile open/create file for loggin
 func openFile(filePath, fileName string) (*os.File, error) {
+
+	if !strings.HasSuffix(filePath, "/") {
+		filePath += "/"
+	}
+
 	// Creamos directorio
 	err := os.MkdirAll(filePath, 0777)
 	if err != nil {
