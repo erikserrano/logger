@@ -3,10 +3,11 @@
 package logger
 
 import (
+	"fmt"
 	"os"
 	"os/user"
+	"strings"
 	"time"
-	"fmt"
 )
 
 // Estructura Logger encargada de almacenar la instancia para almacenamiento de mensajes
@@ -49,7 +50,7 @@ func openFile(filePath, fileName string) (*os.File, error) {
 }
 
 // Método encargado de escribir un mensaje sobre el archivo LOG
-func (log *Logger) WriteLine(kind, message string) (int, error) {
+func (log *Logger) WriteLine(message string, kind ...string) (int, error) {
 
 	// Abrimos archivo
 	file, err := openFile(log.FilePath, log.FileName)
@@ -68,8 +69,13 @@ func (log *Logger) WriteLine(kind, message string) (int, error) {
 	userMessage := user.Uid + ":" + user.Username
 	timeMessage := time.Now().Format("02/01/2006 15:04:05.99999")
 
+	kinds := "info"
+	if len(kind) > 0 {
+		kinds = strings.Join(kind, ",")
+	}
+
 	// Guardamos mensaje
-	n, err := file.WriteString(fmt.Sprintf("[%s][%s][%s] %s\n", timeMessage, userMessage, kind, message))
+	n, err := file.WriteString(fmt.Sprintf("[%s][%s][%s] %s\n", timeMessage, userMessage, kinds, message))
 	if err != nil {
 		return 0, err
 	}
