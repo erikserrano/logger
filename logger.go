@@ -18,7 +18,9 @@ type Logger struct {
 // openFile open/create file for loggin
 func openFile(filePath, fileName string) (*os.File, error) {
 
-	if !strings.HasSuffix(filePath, "/") {
+	if strings.Contains(filePath, "\\") && !strings.HasSuffix(filePath, "\\") {
+		filePath += "\\"
+	} else if strings.Contains(filePath, "/") && !strings.HasSuffix(filePath, "/") {
 		filePath += "/"
 	}
 
