@@ -13,6 +13,7 @@ import (
 type Logger struct {
 	FileName string
 	FilePath string
+	Output   bool
 }
 
 // openFile open/create file for loggin
@@ -80,20 +81,22 @@ func (log *Logger) WriteLine(message string, kind ...string) (int, error) {
 	}
 
 	// Guardamos mensaje
-	n, err := file.WriteString(fmt.Sprintf("[%s][%s][%s] %s\n", timeMessage, userMessage, kinds, message))
+	newLine := fmt.Sprintf("[%s][%s][%s] %s\n", timeMessage, userMessage, kinds, message)
+	n, err := file.WriteString(newLine)
 	if err != nil {
 		return 0, err
 	}
 
 	// Imprimitmos mensaje
-	fmt.Printf("[%s][%s][%s] %s\n", timeMessage, userMessage, kind, message)
-
+	if log.Output {
+		fmt.Printf("[%s][%s][%s] %s\n", timeMessage, userMessage, kind, message)
+	}
 	return n, nil
 }
 
 // New create instance for loggin messages
-func New(filePath, fileName string) (*Logger, error) {
-	log := &Logger{fileName, filePath}
+func New(filePath, fileName string, output bool) (*Logger, error) {
+	log := &Logger{fileName, filePath, output}
 	if _, err := openFile(filePath, fileName); err != nil {
 		return nil, err
 	}
