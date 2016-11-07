@@ -89,7 +89,7 @@ func (log *Logger) WriteLine(message string, kind ...string) (int, error) {
 
 	// Imprimitmos mensaje
 	if log.Output {
-		fmt.Printf("[%s][%s][%s] %s\n", timeMessage, userMessage, kind, message)
+		fmt.Printf("[%s] %s\n", timeMessage, message)
 	}
 	return n, nil
 }
